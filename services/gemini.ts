@@ -38,7 +38,7 @@ const generateGameIdeas = async (formData: FormData, apiKey: string): Promise<Ga
       steps: {
         type: Type.ARRAY,
         items: { type: Type.STRING },
-        description: "Các bước tổ chức",
+        description: "Các bước tổ chức"
       },
       learningGoal: { type: Type.STRING, description: "Mục tiêu bài học" },
       funFactor: { type: Type.STRING, description: "Yếu tố vui nhộn" },
@@ -57,13 +57,13 @@ const generateGameIdeas = async (formData: FormData, apiKey: string): Promise<Ga
           type: Type.OBJECT,
           properties: {
             type: { type: Type.STRING, description: "Loại câu hỏi: 'Trắc nghiệm', 'Điền từ', hoặc 'Sắp xếp câu'" },
-            question: { type: Type.STRING, description: "Nội dung câu hỏi cụ thể liên quan đến chủ đề" },
+            question: { type: Type.STRING, description: "Nội dung câu hỏi. LƯU Ý: Câu hỏi này đóng vai trò là GỢI Ý để mở mảnh ghép hình ảnh." },
             answer: { type: Type.STRING, description: "Đáp án đúng" },
-            imageDescription: { type: Type.STRING, description: "Mô tả hình ảnh minh họa cho câu hỏi này để giúp học sinh dễ hiểu. VD: '3 quả cam', 'Hình tam giác màu đỏ'." }
+            imageDescription: { type: Type.STRING, description: "Mô tả chi tiết hình ảnh minh họa cho riêng câu hỏi này (nếu cần)." }
           },
           required: ["type", "question", "answer", "imageDescription"]
         },
-        description: "3 ví dụ câu hỏi cụ thể (1 trắc nghiệm, 1 điền từ, 1 sắp xếp) cho chủ đề này, kèm mô tả hình ảnh minh họa."
+        description: "4 ví dụ câu hỏi cụ thể. Các câu hỏi này sẽ tương ứng với 4 mảnh ghép che đi bức tranh chủ đề."
       }
     },
     required: ["title", "duration", "description", "preparation", "steps", "learningGoal", "funFactor", "rewardDetails", "quizExamples"],
@@ -81,15 +81,18 @@ const generateGameIdeas = async (formData: FormData, apiKey: string): Promise<Ga
     - Chủ đề: ${formData.topic}
     - Sĩ số: ${formData.classSize}
 
-    Yêu cầu đặc biệt:
-    1. **Thời gian:** Ngắn gọn, chỉ khoảng 3-5 phút.
-    2. **Hệ thống thưởng (Gamification):** Thiết kế cơ chế tính điểm rõ ràng. Khi trả lời đúng được cộng điểm, trả lời sai có thể trừ điểm nhẹ hoặc đưa ra gợi ý. Đề xuất các danh hiệu/huy hiệu ngộ nghĩnh (Ví dụ: "Ong chăm chỉ", "Nhà thông thái") khi đạt mốc điểm.
-    3. **Nội dung câu hỏi đa dạng và TRỰC QUAN:** Trong mỗi trò chơi, hãy đưa ra ví dụ cụ thể về 3 dạng câu hỏi liên quan trực tiếp đến chủ đề "${formData.topic}".
-       - Rất quan trọng: Mỗi câu hỏi PHẢI có một mô tả hình ảnh (imageDescription) để minh họa cho nội dung đó. Ví dụ: Nếu hỏi "1 + 1 = ?", imageDescription nên là "Hình ảnh 1 chú thỏ cộng thêm 1 chú thỏ".
-       - Dạng 1: Trắc nghiệm (Nhiều lựa chọn).
-       - Dạng 2: Điền từ vào chỗ trống.
-       - Dạng 3: Sắp xếp từ thành câu/Sắp xếp quy trình.
-    4. Ngôn ngữ thân thiện, vui tươi, khích lệ học sinh tiểu học.
+    Yêu cầu đặc biệt về thiết kế trò chơi "LẬT MẢNH GHÉP" (Puzzle Reveal):
+    1. **Hình ảnh chủ đề:** Hãy hình dung một hình ảnh "Key Visual" đại diện cho chủ đề "${formData.topic}".
+    2. **Câu hỏi mảnh ghép:** Tạo ra 4 câu hỏi (quizExamples). Mỗi câu hỏi khi trả lời đúng sẽ mở ra một góc của hình ảnh chủ đề đó.
+       - Nội dung câu hỏi phải liên quan mật thiết đến kiến thức của chủ đề.
+       - Dạng câu hỏi đa dạng: Trắc nghiệm, Điền từ, Đố vui.
+    3. **Gamification:** Thiết kế luật chơi sao cho cả lớp cùng tham gia đoán hình ảnh bí mật phía sau các mảnh ghép.
+    4. **Hình minh họa:** Trong trường 'imageDescription' của từng câu hỏi, hãy mô tả gợi ý hình ảnh liên quan đến câu hỏi đó. 
+    
+    Yêu cầu chung:
+    - Thời gian: 3-5 phút.
+    - Ngôn ngữ: Tiếng Việt, giọng văn vui tươi, khích lệ.
+    - Trả về JSON theo schema đã định nghĩa.
   `;
 
   try {
@@ -99,7 +102,7 @@ const generateGameIdeas = async (formData: FormData, apiKey: string): Promise<Ga
       config: {
         responseMimeType: "application/json",
         responseSchema: responseSchema,
-        systemInstruction: "Bạn là trợ lý giáo dục chuyên nghiệp, tập trung vào phương pháp Gamification (Trò chơi hóa) trong lớp học.",
+        systemInstruction: "Bạn là trợ lý giáo dục chuyên nghiệp, chuyên thiết kế các trò chơi tương tác trực quan cho học sinh tiểu học.",
       },
     });
 
@@ -118,10 +121,15 @@ const generateGameIllustration = async (title: string, description: string, apiK
 
   const ai = new GoogleGenAI({ apiKey });
 
-  // Simple prompt for a kid-friendly illustration
-  const prompt = `A cute, simple, colorful, 3D cartoon style sticker illustration suitable for elementary school education. 
-  Subject: ${description || title}. 
-  Style: Cheerful, bright colors, white background, high quality icon style. Single object or clear scene. No text in image.`;
+  // Enhanced prompt to act as a dynamic image library generator
+  const prompt = `
+    Create a high-quality educational illustration suitable for elementary school students (ages 6-10).
+    Topic: ${title} - ${description}
+    Style: 3D vector art style, colorful, cheerful, clean white background. 
+    Make it look like a premium sticker or educational flashcard asset.
+    Ensure specific details from the description (like numbers, objects, colors) are accurate.
+    No text inside the image.
+  `;
 
   try {
     const response = await ai.models.generateContent({
